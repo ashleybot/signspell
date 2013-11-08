@@ -1,7 +1,21 @@
 {
   "name": "sign-spell",
   "version": "0.0.1",
+  "description": "a game to encourage the use of sign language in the home",
+  "contributors": [
+    {
+      "name": "Ashley Wilson",
+      "email": "e.a.greer@gmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ashleybot/signspell.git"
+  },
   "dependencies": {
+    "express": "3.4.x",
+    "jade": "0.35.x",
+    "socket.io": "0.9.x"
   },
   "engines": {
     "node": "0.10.x",
