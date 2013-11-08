@@ -12,7 +12,7 @@ function start(route) {
     response.write("Hello World");
     response.end();
   }
-  var port = process.env.PORT || CONFIG.port;
+  var port = process.env.PORT || 3000;
   http.createServer(onRequest).listen(port);
   console.log("Server has started.");
 }
