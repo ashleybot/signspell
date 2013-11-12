@@ -36,8 +36,10 @@ io.sockets.on('connection', function (socket) {
 
   // setPseudo
    socket.on('setPseudo', function (data) {
-    socket.set('pseudo', data); //TODO I need to assign the pseudonym to the client object
+    //TODO I need to assign the pseudonym to the client object
+    socket.set('pseudo', data); 
     console.log("name set to " + data);
+    socket.broadcast.emit('playerJoined', data);
    });
    
   
