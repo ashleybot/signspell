@@ -6,16 +6,23 @@ html
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
     script(src="/socket.io/socket.io.js")
     script(src="views/mobile.js")
-    script(src="js/vendor/custom.modernizer.js")
+    script(src="js/vendor/custom.modernizr.js")
   body
     div.row
       header
-        h1 Sign Spell
-      div
+        h2 Please enter your name
+    div.row
+      div.small-12
         input(type='text')#pseudoInput
         button#pseudoSet.button Set Pseudo
-      div#chatEntries
-      div#chatControls
-        input(type='text')#messageInput
-        button#submit.button Send
+    div.row
+      div.small-12
+        div#chatEntries
+    div.row#chatControls
+      div.small-3
+        button.handshape.button Hi
+      div.small-3
+        button.handshape.button Bye
+      div.small-3
+        button.handshape.button Ciao
             

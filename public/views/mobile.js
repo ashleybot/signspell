@@ -4,13 +4,10 @@ function addMessage(msg, pseudo) {
    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
 }
 
-function sendMessage() {
-   if ($('#messageInput').val() != "") 
-   {
-      socket.emit('message', $('#messageInput').val());
-      addMessage($('#messageInput').val(), "Me", new Date().toISOString(), true);
-      $('#messageInput').val('');
-   }
+function sendMessage(object) {
+    var text = object.innerHTML;
+    socket.emit('message', text); // emit to socket
+    addMessage(text, "Me", new Date().toISOString(), true); // update my screen
 }
 
 // #pseudoSet calls setPseudo()
@@ -18,6 +15,7 @@ function setPseudo() {
    if ($("#pseudoInput").val() != "")
    {
       socket.emit('setPseudo', $("#pseudoInput").val());
+      socket.emit('message', "Welcome " + $("#pseudoInput").val());
       $('#chatControls').show();
       $("#chatEntries").append("<h2>Welcome " + $("#pseudoInput").val() + "</h2>");
       $('#pseudoInput').hide();
@@ -33,5 +31,5 @@ socket.on('message', function(data) {
 $(function() {
    $("#chatControls").hide();
    $("#pseudoSet").click(function() {setPseudo()});
-   $("#submit").click(function() {sendMessage();});
+   $(".handshape").click(function() {sendMessage(this)});
 });
