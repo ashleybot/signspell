@@ -26,13 +26,17 @@ app.get('/', function(req, res){
   res.render('home.jade');
 });
 
+app.get('/mobile', function(req, res){
+  res.render('mobile.jade');
+});
+
 // WebSockets
 
 io.sockets.on('connection', function (socket) {
 
   // setPseudo
    socket.on('setPseudo', function (data) {
-    socket.set('pseudo', data);
+    socket.set('pseudo', data); //TODO I need to assign the pseudonym to the client object
     console.log("name set to " + data);
    });
    
