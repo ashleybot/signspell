@@ -28,7 +28,6 @@ app.get('/', function(req, res){
 
 // WebSockets
 
-
 io.sockets.on('connection', function (socket) {
 
   // setPseudo
