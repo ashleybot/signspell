@@ -41,7 +41,7 @@ io.sockets.on('connection', function (socket) {
     //TODO I need to assign the pseudonym to the client object
     socket.set('pseudo', data); 
     playerNumber = playerNumber + 1; // this will only work for one page load each.... it increments too high
-    
+    socket.set('player_id', playerNumber);
     var pseudoData = {psuedo : data, 'player_id' : playerNumber}
     socket.broadcast.emit('playerJoined', pseudoData);
    });
@@ -50,8 +50,10 @@ io.sockets.on('connection', function (socket) {
   // message 
   socket.on('message', function (message) {
    socket.get('pseudo', function (error, name) {
-        var data = { 'message' : message, pseudo : name, 'player_id' : playerNumber };
+    socket.get('player_id', function (error, id){
+        var data = { 'message' : message, pseudo : name, player_id : id };
         socket.broadcast.emit('message', data);
+        });
      })
    });
 });

@@ -17,8 +17,14 @@ socket.on('playerJoined', function(data) {
   addPlayer(data['player_id'], data['psuedo']);
 });
 
-function addMessage(msg, pseudo) {
-   $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
+function addMessage(msg, pseudo, player_id) {
+  if (player_id ==1)
+  {
+    $("#player1").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
+  }
+  else{
+    $("#player2").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
+  }
 }
 
 function sendMessage() {
@@ -33,7 +39,7 @@ function sendMessage() {
 
 // message
 socket.on('message', function(data) {
-   addMessage(data['message'], data['pseudo']);
+   addMessage(data['message'], data['pseudo'], data['player_id']);
 });
 
 $(function() {
