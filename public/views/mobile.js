@@ -15,7 +15,6 @@ function setPseudo() {
    if ($("#pseudoInput").val() != "")
    {
       socket.emit('setPseudo', $("#pseudoInput").val());
-      socket.emit('message', "Welcome " + $("#pseudoInput").val());
       $('#chatControls').show();
       $("#chatEntries").append("<h2>Welcome " + $("#pseudoInput").val() + "</h2>");
       $('#pseudoInput').hide();

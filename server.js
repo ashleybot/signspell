@@ -30,25 +30,28 @@ app.get('/mobile', function(req, res){
   res.render('mobile.jade');
 });
 
-// WebSockets
+var playerNumber = 0;
+
+// WebSocket connected
 
 io.sockets.on('connection', function (socket) {
-
+  
   // setPseudo
    socket.on('setPseudo', function (data) {
     //TODO I need to assign the pseudonym to the client object
     socket.set('pseudo', data); 
-    console.log("name set to " + data);
-    socket.broadcast.emit('playerJoined', data);
+    playerNumber = playerNumber + 1; // this will only work for one page load each.... it increments too high
+    
+    var pseudoData = {psuedo : data, 'player_id' : playerNumber}
+    socket.broadcast.emit('playerJoined', pseudoData);
    });
    
   
   // message 
   socket.on('message', function (message) {
    socket.get('pseudo', function (error, name) {
-        var data = { 'message' : message, pseudo : name };
+        var data = { 'message' : message, pseudo : name, 'player_id' : playerNumber };
         socket.broadcast.emit('message', data);
-        console.log("user " + name + " send this : " + message);
      })
    });
 });

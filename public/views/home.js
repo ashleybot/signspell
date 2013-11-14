@@ -1,21 +1,20 @@
 var socket = io.connect();
 
 function addPlayer(player, pseudo) {
-  console.log("adding player 1 at " + pseudo);
   if (player == 1)
   {
-    $("#player1").html(pseudo);
+    $("#player1_handle").html("Welcome " + pseudo);
   }
   else
   {
-    $("#player2").html(pseudo);
+    $("#player2_handle").html("Welcome " + pseudo);
   }
 }
 
+
 // player Joined
 socket.on('playerJoined', function(data) {
-  console.log("front end playerJoined");
-  addPlayer(1,data);
+  addPlayer(data['player_id'], data['psuedo']);
 });
 
 function addMessage(msg, pseudo) {
