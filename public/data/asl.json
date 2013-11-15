@@ -1,0 +1,86 @@
+{
+  "BLUE" : {
+    "Start" : {
+      "Handshape" : "B",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "B",
+      "PalmOrientation" : "DOWN",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    }
+  },
+  "YELLOW" : {
+    "Start" : {
+      "Handshape" : "Y",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "Y",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    }
+  },
+  "GREEN" : {
+    "Start" : {
+      "Handshape" : "G",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "G",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    }
+  },
+  "PURPLE" : {
+    "Start" : {
+      "Handshape" : "P",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "P",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 0,
+      "ArmLongitude" : 0
+    }
+  },
+  "RED" : {
+    "Start" : {
+      "Handshape" : "Z",
+      "PalmOrientation" : "SELF",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 30
+    },
+    "End" : {
+      "Handshape" : "X",
+      "PalmOrientation" : "SELF",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 30
+    }
+  },
+  "ORANGE" : {
+    "Start" : {
+      "Handshape" : "C",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "S",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    }
+  }
+}

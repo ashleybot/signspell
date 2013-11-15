@@ -3,10 +3,16 @@ html
   head
     title Sign Spell
     link(rel='stylesheet', href='/stylesheets/foundation.css')
+    link(rel='stylesheet', href='/stylesheets/game.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
     script(src="/socket.io/socket.io.js")
     script(src="views/home.js")
     script(src="js/vendor/custom.modernizr.js")
+    script(src="js/vendor/tween/easeljs-NEXT.min.js")
+    script(src="js/vendor/tween/createjs/events/Event.js")
+    script(src="js/vendor/tween/createjs/events/EventDispatcher.js")
+    script(src="js/vendor/tween/tweenjs/Tween.js")
+    script(src="js/vendor/tween/tweenjs/Ease.js")
   body
     div.row
       header
@@ -18,5 +24,7 @@ html
         h2#player2_handle
     div.row
       div#chatEntries.large-12
+    div.row
+      canvas#testCanvas(width="960",height="400")
 
             
