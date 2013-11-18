@@ -74,7 +74,7 @@ function detectTrigger(x){
     step1b = true;
   }
   if (step2a && (x > 0)) {
-    socket.emit('message', "CIRCLE");
+    socket.emit('message', "CIRCLE"); // this works, but it might be finicky.
     step1a = false;
     step1b = false;
     step2a = false;
@@ -90,10 +90,7 @@ function detectTrigger(x){
 }
 function deviceOrientationHandler(lr, fb, dir){
   // gamma is the tilt left-to-rightl
-   socket.emit('message', 'gamma rotation ' + lr);
-  if(step1a){
-    socket.emit('message', 'step 1 reached'); // emit to socket
-  }
+   //socket.emit('message', 'gamma rotation ' + lr); // this works for more modern devices
   
   if (step1a && (lr > 0)) {
     step1b = true;
@@ -143,7 +140,7 @@ $(function() {
         var dir = eventData.alpha
     
         // call our orientation event handler
-        deviceOrientationHandler(tiltLR, tiltFB, dir);
+        //deviceOrientationHandler(tiltLR, tiltFB, dir);
         
       }, false);
       
@@ -155,6 +152,7 @@ $(function() {
   if ((/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) ) {
     if (window.DeviceMotionEvent){
       window.addEventListener('devicemotion', deviceMotionHandler, false);
+      console.log("event listener added");
     }
 
   }
