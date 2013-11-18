@@ -48,8 +48,29 @@ function deviceMotionHandler(eventData) {
   //socket.emit('message', "CIRCLE"); // this totally worked, but sends a message every little movement
 }
 
+var step1a, step1b, step2a, step2b = false;
 function deviceOrientationHandler(lr, fb, dir){
-  console.log("tilt detected");
+  // gamma is the tilt left-to-rightl
+  // TODO
+  // Figure out how to detect a specific motion from a stream of motion
+  
+  if (step1a && (lr > 0)) {
+    step1b = true;
+  }
+  if (step2a && (lr > 0)) {
+    console.log("hit!");
+    step1a = false;
+    step1b = false;
+    step2a = false;
+    step2b = false;
+  }
+  if (step1b && (lr < -45)) {
+    step2a = true;
+  } else {
+    if (lr < -45){
+      step1a = true;
+    }
+  }
 }
 
 // message
@@ -68,11 +89,7 @@ $(function() {
     console.info("after slide change");
     console.info("slide " + orbit.slide_number + " of " + orbit.total_slides);
   });
-  
-  if ((/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) ) {
-    if (window.DeviceMotionEvent){
-      window.addEventListener('devicemotion', deviceMotionHandler, false);
-    }
+
     if (window.DeviceOrientationEvent){
       window.addEventListener('deviceorientation', function(eventData) {
         // gamma is the left-to-right tilt in degrees, where right is positive
@@ -89,5 +106,11 @@ $(function() {
         
       }, false);
     }
+  
+  if ((/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) ) {
+    if (window.DeviceMotionEvent){
+      window.addEventListener('devicemotion', deviceMotionHandler, false);
+    }
+
   }
 });
