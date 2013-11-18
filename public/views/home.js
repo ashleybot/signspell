@@ -66,6 +66,7 @@ $(function() {
     
   var canvas = document.getElementById("testCanvas");
   var stage = new createjs.Stage(canvas);
+  console.log(stage);
   stage.autoClear = true;
 
   var balls = [];
@@ -93,5 +94,15 @@ $(function() {
     });
     createjs.Ticker.addEventListener("tick", stage);
   }); // getJSON
+  
+  $("#logo").click( function(){
+    console.log("stage " + stage);
+    var child = stage.getChildAt(0);
+    if (child){
+      //createjs.Tween.removeTweens(child);
+      var clickTween = createjs.Tween.get(child, {override:true,loop:false})
+             .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut);
+    }
+  });
 
 }); //function end

@@ -31,4 +31,10 @@ $(function() {
    $("#chatControls").hide();
    $("#pseudoSet").click(function() {setPseudo()});
    $(".handshape").click(function() {sendMessage(this)});
+   
+   //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
+   $("#featured").on("orbit:after-slide-change", function(event, orbit) {
+    console.info("after slide change");
+    console.info("slide " + orbit.slide_number + " of " + orbit.total_slides);
+  });
 });
