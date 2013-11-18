@@ -16,10 +16,8 @@ function setPseudo() {
    if ($("#pseudoInput").val() != "")
    {
       socket.emit('setPseudo', $("#pseudoInput").val());
-      $('#chatControls').show();
-      $("#chatEntries").append("<h2>Welcome " + $("#pseudoInput").val() + "</h2>");
-      $('#pseudoInput').hide();
-      $('#pseudoSet').hide();
+      $('#featured').show();
+      $('#player_setup').hide();
    }
 }
 
@@ -117,7 +115,7 @@ socket.on('message', function(data) {
 });
 
 $(function() {
-   $("#chatControls").hide();
+   $("#featured").hide();
    $("#pseudoSet").click(function() {setPseudo()});
    $(".handshape").click(function() {sendMessage(this)});
    

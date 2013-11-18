@@ -1,6 +1,7 @@
 doctype 5
 html
   head
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
     title Sign Spell
     link(rel='stylesheet', href='/stylesheets/foundation.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
@@ -8,30 +9,24 @@ html
     script(src="views/mobile.js")
     script(src="js/vendor/custom.modernizr.js")
   body
-    div.row
-      header
-        h2 Please enter your name
-    div.row
-      div.small-12
-        input(type='text')#pseudoInput
-        button#pseudoSet.button Set Pseudo
-    div.row
-      div.small-12
-        div#chatEntries
-    div.row#chatControls
-      div.small-3
-        button.handshape.button Hi
-      div.small-3
-        button.handshape.button Bye
-      div.small-3
-        button.handshape.button Ciao
+    div#player_setup
+      div.row
+        header.large-12.columns
+          h2 Please enter your name
+      div.row
+        div.large-12.columns
+          input(type='text')#pseudoInput
+          button#pseudoSet.button Set Pseudo
     ul#featured(data-orbit)
       li
-        img(src='images/asl_y.png')
+        img(src='images/circle.png')
       li
-        img(src='images/asl_c.png')
+        img(src='images/square.png')
       li
-        img(src='images/asl_s.png')
+        img(src='images/triangle.png')
+    div.row
+      div.large-12.columns
+        div#chatEntries
   
   script(src="js/foundation.min.js")
   script(src="js/foundation/foundation.orbit.js")
