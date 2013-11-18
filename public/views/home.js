@@ -99,9 +99,8 @@ $(function() {
     console.log("stage " + stage);
     var child = stage.getChildAt(0);
     if (child){
-      //createjs.Tween.removeTweens(child);
       var clickTween = createjs.Tween.get(child, {override:true,loop:false})
-             .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut);
+             .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
     }
   });
 
