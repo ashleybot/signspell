@@ -1,6 +1,7 @@
 var socket = io.connect();
 var selectedSlide = 0;
 var selectedShape = "CIRCLE";
+var playerId;
 
 function addMessage(msg, pseudo) {
    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
@@ -17,7 +18,7 @@ function setPseudo() {
    if ($("#pseudoInput").val() != "")
    {
       socket.emit('setPseudo', $("#pseudoInput").val());
-      $('#featured').show();
+
       $('#player_setup').hide();
    }
 }
@@ -113,6 +114,18 @@ function deviceOrientationHandler(lr, fb, dir){
 // message
 socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo']);
+});
+
+// playerJoined
+socket.on('playerJoined', function(data){
+  playerId = data["player_id"];
+  if (playerId == "1"){
+    $('#zero').attr("src","images/red.png");
+    $('#one').attr("src","images/blue.png");
+    $('#two').attr("src","images/green.png");
+  }
+  
+  $('#featured').show();
 });
 
 $(function() {

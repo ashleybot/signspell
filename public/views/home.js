@@ -1,5 +1,5 @@
 var socket = io.connect();
-var canvas, stage, shapes;
+var canvas, stage, shapes, colors;
 var player1_selectedShapes;
 var player2_selectedShapes;
 
@@ -38,7 +38,7 @@ socket.on('message', function(data) {
    if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
     
     // go through each shape and get it in the stage and then make it move
-    console.log(shapes);
+    
     $.each(shapes, function(index){
       var child = null;
       if (shapes[index] == possibleShape){
@@ -128,6 +128,7 @@ $(function() {
   stage.autoClear = true;
 
   shapes = [];
+  colors = [];
   $.getJSON( "data/test.json", function( data ) {
     
     $.each( data, function( key, val) {
@@ -143,7 +144,8 @@ $(function() {
         ball = createTriangle(shapeColor);
       }
       
-      shapes.push(shapeType);
+      shapes.push(shapeType); // for data indexing, player 1 gets shapes
+      colors.push(shapeColor); // for data indexing, player 2 gets colors
       ball.x = 200 + (key * 80);
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
