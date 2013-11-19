@@ -1,6 +1,8 @@
 var socket = io.connect();
 var canvas, stage, shapes;
 var player1_selectedShapes;
+var player2_selectedShapes;
+
 
 function addPlayer(player, pseudo) {
   if (player == 1)
@@ -35,17 +37,20 @@ socket.on('message', function(data) {
    var possibleShape = data['message'];
    if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
     
-    var child = null;
-    if (possibleShape == 'CIRCLE') {
-      child = stage.getChildAt(1);
-    } else if (possibleShape == 'SQUARE') {
-      child = stage.getChildAt(2);
-    }
-    player1_selectedShapes.push(child);
-    if (child){
-      var clickTween = createjs.Tween.get(player1_selectedShapes[0], {override:true,loop:false})
-             .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
-    }
+    // go through each shape and get it in the stage and then make it move
+    console.log(shapes);
+    $.each(shapes, function(index){
+      var child = null;
+      if (shapes[index] == possibleShape){
+        child = stage.getChildAt(index); // because the indexes should match up for now
+        player1_selectedShapes.push(child);
+        if (child){
+          var clickTween = createjs.Tween.get(child, {override:true,loop:false})
+                 .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
+        }
+      }
+    });
+
    }
 });
 
@@ -75,11 +80,11 @@ function handleComplete(tween) {
   
 }
 
-function createBall() {
+function createBall(color) {
   var ball = new createjs.Shape();
   ball.graphics.setStrokeStyle(5, 'round', 'round');
   ball.graphics.beginStroke(('#000000'));
-  ball.graphics.beginFill("#FF0000").drawCircle(0,0,50);
+  ball.graphics.beginFill(color).drawCircle(0,0,50);
   ball.graphics.endStroke();
   ball.graphics.endFill();
   ball.graphics.setStrokeStyle(1, 'round', 'round');
@@ -90,17 +95,28 @@ function createBall() {
   return ball;
 }
 
-function createBox() {
+function createBox(color) {
   var ball = new createjs.Shape();
   ball.graphics.setStrokeStyle(5, 'round', 'round');
   ball.graphics.beginStroke(('#000000'));
-  ball.graphics.beginFill("#FF0000").drawRect(0,0,100,100);
+  ball.graphics.beginFill(color).drawRect(0,-50,100,100);
   ball.graphics.endStroke();
   ball.graphics.endFill();
   return ball;
 }
 
-function createTriangle() {
+function createTriangle(color) {
+  var ball = new createjs.Shape();
+  ball.graphics.setStrokeStyle(5, 'round', 'round');
+  ball.graphics.beginStroke(('#000000'));
+  ball.graphics.beginFill(color);
+  ball.graphics.moveTo(-50,-50);
+  ball.graphics.lineTo(50,50);
+  ball.graphics.lineTo(-50,50);
+  ball.graphics.lineTo(-50,-50);
+  ball.graphics.endStroke();
+  ball.graphics.endFill();
+  return ball;
   
 }
 
@@ -112,34 +128,39 @@ $(function() {
   stage.autoClear = true;
 
   shapes = [];
-  $.getJSON( "data/asl.json", function( data ) {
+  $.getJSON( "data/test.json", function( data ) {
     
     $.each( data, function( key, val) {
+      var shapeType = val.Shape;
+      var shapeColor = val.Color;
+
       var ball;
-      if ((key.length % 2) === 0){
-        ball = createBox();
+      if (shapeType == "SQUARE"){
+        ball = createBox(shapeColor);
+      } else if (shapeType == "CIRCLE"){
+        ball = createBall(shapeColor);
       } else{
-        ball = createBall();
+        ball = createTriangle(shapeColor);
       }
-      shapes.push(ball);
-  
-    }); //each
-  
-    $.each(shapes, function(index, ball){
-      ball.x = 200 + (index * 80);
+      
+      shapes.push(shapeType);
+      ball.x = 200 + (key * 80);
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
             .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
-             //.to({x:ball.x, y:canvas.height - 55, rotation:-360}, 1500, createjs.Ease.bounceOut);
-             /*.wait(1000)
+      stage.addChild(ball);
+  
+    }); //each
+  
+    // Here are some tween examples
+             /*.to({x:ball.x, y:canvas.height - 55, rotation:-360}, 1500, createjs.Ease.bounceOut);
+             .wait(1000)
              .to({x:canvas.width-55, rotation:360}, 2500, createjs.Ease.bounceOut)
              .wait(1000 + (500 * index)).call(handleComplete)
              .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut)
              .wait(1000)
              .to({scaleX:.5, scaleY:.5, x:30, rotation:-360, y:canvas.height-30}, 2500, createjs.Ease.bounceOut);*/
-      
-      stage.addChild(ball);
-    });
+
     createjs.Ticker.addEventListener("tick", stage);
   }); // getJSON
   
