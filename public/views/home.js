@@ -1,17 +1,19 @@
 var socket = io.connect();
 var canvas, stage, shapes, colors;
-var player1_selectedShapes;
-var player2_selectedShapes;
+var player1_selectedShapes, player1_selectedShapeData;
+var player2_selectedShapes, player2_selectedShapeData;
 
 
 function addPlayer(player, pseudo) {
   if (player == 1)
   {
     $("#player1_handle").html("Welcome " + pseudo);
+    $('#player1_score').html("Score: 0");
   }
   else
   {
     $("#player2_handle").html("Welcome " + pseudo);
+    $('#player2_score').html("Score: 0");
   }
 }
 
@@ -30,11 +32,47 @@ function addMessage(msg, pseudo, player_id) {
   }
 }
 
+function increaseScore(player_id){
+  var tagId = "#player1_score";
+  if (player_id == 2){
+    tagId =  '#player2_score';
+  }
+  var statement = $(tagId).innerHTML;
+  var currentScore = +statement.substr(statement.length - 1, 1);
+  console.log(currentScore);
+  $(tagId).html("Score: " + (currentScore + 1));
+  
+}
+
 // message
 socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo'], data['player_id']);
-   // TODO if the message is a shape, then make some objects levitate
+   
    var possibleShape = data['message'];
+   /*
+   var playerId = data['player_id'];
+   if (playerId == '1'){
+     if (player2_selectedShapeData.length > 0){
+       // since player 1 has colors, then player2_selectedShapeData should also contain colors
+       if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
+         // win condition!
+         increaseScore(playerId);
+         dropObjects(2);
+         dropObjects(1);
+       }
+     }
+   } else {
+     if (player1_selectedShapeData.length > 0){
+       // since player 2 has shapes, then player1_selectedShapeData should also contain shape names
+       if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
+         // win condition!
+         dropObjects(1);
+         dropObjects(2);
+         increaseScore(playerId);
+      }
+     }
+   }
+   */
    
    if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
     $.each(shapes, function(index){
@@ -42,26 +80,32 @@ socket.on('message', function(data) {
       if (shapes[index] == possibleShape){
         child = stage.getChildAt(index); // because the indexes should match up for now
         player2_selectedShapes.push(child);
+        player2_selectedShapeData.push(colors[index]);
         if (child){
           var clickTween = createjs.Tween.get(child, {override:true,loop:false})
                  .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
         }
       }
     });
-
+    if (player2_selectedShapes.length > 0){
+      socket.emit('shapesSelected', player2_selectedShapes);
+    }
    } else if ('REDBLUEGREEN'.indexOf(possibleShape) > -1){
-    console.log(colors);
      $.each(colors, function(index){
       var child = null;
       if (colors[index] == possibleShape){
         child = stage.getChildAt(index); // because the indexes should match up for now
         player1_selectedShapes.push(child);
+        player1_selectedShapes.push(shapes[index]);
         if (child){
           var clickTween = createjs.Tween.get(child, {override:true,loop:false})
                  .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
         }
       }
      });
+     if (player1_selectedShapes.length > 0){
+       socket.emit('shapesSelected', player1_selectedShapes);
+     }
    }
    
 });
@@ -78,6 +122,7 @@ function dropObjects(player_id) {
       });
     }
     player1_selectedShapes = [];
+    player1_selectedShapeData = [];
   } else {
     if (player2_selectedShapes) {
       $.each(player2_selectedShapes, function(index, shape){
@@ -87,7 +132,8 @@ function dropObjects(player_id) {
         }
       });
     }
-    player2_selectedShapes =[];
+    player2_selectedShapes = [];
+    player2_selectedShapeData = [];
   }
 }
 

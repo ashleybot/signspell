@@ -60,8 +60,16 @@ io.sockets.on('connection', function (socket) {
   // shape changed
   socket.on('shapeChanged', function (newShapeName) {
     socket.get('player_id', function (error, id){
+      socket.set('player_shapes', null);
       var data = {'player_id' : id, 'shape_name' : newShapeName};
       socket.broadcast.emit('shapeChanged', data);
+    });
+  });
+  
+  // shapes selected
+  socket.on('shapeSelected', function (data) {
+    socket.get('player_id', function (error, id){
+      socket.set('player_shapes', data);
     });
   });
 });

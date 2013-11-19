@@ -68,7 +68,6 @@ function deviceMotionHandler(eventData) {
 var step1a, step1b, step2a, step2b = false;
 function detectTrigger(x){
     // gamma is the tilt left-to-rightl
-   //socket.emit('message', 'gamma rotation ' + x);
   
   if (step1a && (x > 0)) {
     step1b = true;
@@ -125,11 +124,11 @@ socket.on('playerJoined', function(data){
     $('#two').attr("src","images/green.png");
     selectedShape = "RED";
   }
-  //$('#featured').show();
+  $('#featured').show();
 });
 
 $(function() {
-   //$("#featured").hide();
+   $("#featured").hide();
    $("#pseudoSet").click(function() {setPseudo()});
    
    //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
