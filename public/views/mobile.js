@@ -1,6 +1,6 @@
 var socket = io.connect();
 var selectedSlide = 0;
-var selectedShape = "CIRLCE";
+var selectedShape = "CIRCLE";
 
 function addMessage(msg, pseudo) {
    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
@@ -124,7 +124,7 @@ $(function() {
    $("#featured").on("orbit:after-slide-change", function(event, orbit) {
     var shapes = ['CIRCLE','SQUARE','TRIANGLE'];
     selectedShape = shapes[orbit.slide_number];
-    //TODO when a new shape is selected then the objects should fall
+    socket.emit('shapeChanged', selectedShape); // emit to socket
   });
 
     /*

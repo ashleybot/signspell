@@ -1,5 +1,6 @@
 var socket = io.connect();
 var canvas, stage, shapes;
+var player1_selectedShapes;
 
 function addPlayer(player, pseudo) {
   if (player == 1)
@@ -40,8 +41,9 @@ socket.on('message', function(data) {
     } else if (possibleShape == 'SQUARE') {
       child = stage.getChildAt(2);
     }
+    player1_selectedShapes.push(child);
     if (child){
-      var clickTween = createjs.Tween.get(child, {override:true,loop:false})
+      var clickTween = createjs.Tween.get(player1_selectedShapes[0], {override:true,loop:false})
              .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
     }
    }
@@ -49,6 +51,7 @@ socket.on('message', function(data) {
 
 function dropObjects(player_id) {
   //TODO Get player's selected objects and drop them
+  player1_selectedShapes.pop();
 }
 
 // shape Changed
@@ -92,7 +95,8 @@ function createTriangle() {
 }
 
 $(function() {
-    
+  player1_selectedShapes = [];
+  
   canvas = document.getElementById("testCanvas");
   stage = new createjs.Stage(canvas);
   stage.autoClear = true;
