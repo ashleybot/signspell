@@ -123,20 +123,24 @@ socket.on('playerJoined', function(data){
     $('#zero').attr("src","images/red.png");
     $('#one').attr("src","images/blue.png");
     $('#two').attr("src","images/green.png");
+    selectedShape = "RED";
   }
-  
-  $('#featured').show();
+  //$('#featured').show();
 });
 
 $(function() {
-   $("#featured").hide();
+   //$("#featured").hide();
    $("#pseudoSet").click(function() {setPseudo()});
-   $(".handshape").click(function() {sendMessage(this)});
    
    //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
    $("#featured").on("orbit:after-slide-change", function(event, orbit) {
     var shapes = ['CIRCLE','SQUARE','TRIANGLE'];
-    selectedShape = shapes[orbit.slide_number];
+    var colors = ['RED','BLUE','GREEN'];
+    if (playerId == '1') {
+      selectedShape = colors[orbit.slide_number];
+    } else {
+      selectedShape = shapes[orbit.slide_number];
+    }
     socket.emit('shapeChanged', selectedShape); // emit to socket
   });
 

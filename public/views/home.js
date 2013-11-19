@@ -35,15 +35,13 @@ socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo'], data['player_id']);
    // TODO if the message is a shape, then make some objects levitate
    var possibleShape = data['message'];
+   
    if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
-    
-    // go through each shape and get it in the stage and then make it move
-    
     $.each(shapes, function(index){
       var child = null;
       if (shapes[index] == possibleShape){
         child = stage.getChildAt(index); // because the indexes should match up for now
-        player1_selectedShapes.push(child);
+        player2_selectedShapes.push(child);
         if (child){
           var clickTween = createjs.Tween.get(child, {override:true,loop:false})
                  .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
@@ -51,22 +49,46 @@ socket.on('message', function(data) {
       }
     });
 
+   } else if ('REDBLUEGREEN'.indexOf(possibleShape) > -1){
+    console.log(colors);
+     $.each(colors, function(index){
+      var child = null;
+      if (colors[index] == possibleShape){
+        child = stage.getChildAt(index); // because the indexes should match up for now
+        player1_selectedShapes.push(child);
+        if (child){
+          var clickTween = createjs.Tween.get(child, {override:true,loop:false})
+                 .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
+        }
+      }
+     });
    }
+   
 });
 
-function dropObjects(player_id) {
-  //TODO Get player's selected objects and drop them
-  
-  if (player1_selectedShapes) {
-    $.each(player1_selectedShapes, function(index, shape) {
-      
-      if (shape){
+function dropObjects(player_id) {  
+  if (player_id == 1){
+    if (player1_selectedShapes) {
+      $.each(player1_selectedShapes, function(index, shape) {
+        
+        if (shape){
+            var tween = createjs.Tween.get(shape, {override:true,loop:false})
+                  .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+        }
+      });
+    }
+    player1_selectedShapes = [];
+  } else {
+    if (player2_selectedShapes) {
+      $.each(player2_selectedShapes, function(index, shape){
+        if (shape){
           var tween = createjs.Tween.get(shape, {override:true,loop:false})
-                .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
-      }
-    });
+                  .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+        }
+      });
+    }
+    player2_selectedShapes =[];
   }
-  player1_selectedShapes = [];
 }
 
 // shape Changed
@@ -120,8 +142,19 @@ function createTriangle(color) {
   
 }
 
+function readableColor(hex){
+  if (hex.indexOf("FF0000") > -1){
+    return 'RED';
+  } else if (hex.indexOf("0000FF") > -1) {
+    return 'BLUE';
+  } else {
+    return 'GREEN';
+  }
+}
+
 $(function() {
   player1_selectedShapes = [];
+  player2_selectedShapes = [];
   
   canvas = document.getElementById("testCanvas");
   stage = new createjs.Stage(canvas);
@@ -145,7 +178,8 @@ $(function() {
       }
       
       shapes.push(shapeType); // for data indexing, player 1 gets shapes
-      colors.push(shapeColor); // for data indexing, player 2 gets colors
+      colors.push(readableColor(shapeColor)); // for data indexing, player 2 gets colors
+      
       ball.x = 200 + (key * 80);
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
@@ -165,13 +199,5 @@ $(function() {
 
     createjs.Ticker.addEventListener("tick", stage);
   }); // getJSON
-  
-  $("#logo").click( function(){
-    var child = stage.getChildAt(0);
-    if (child){
-      var clickTween = createjs.Tween.get(child, {override:true,loop:false})
-             .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
-    }
-  });
 
 }); //function end
