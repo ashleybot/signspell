@@ -51,7 +51,17 @@ socket.on('message', function(data) {
 
 function dropObjects(player_id) {
   //TODO Get player's selected objects and drop them
-  player1_selectedShapes.pop();
+  
+  if (player1_selectedShapes) {
+    $.each(player1_selectedShapes, function(index, shape) {
+      
+      if (shape){
+          var tween = createjs.Tween.get(shape, {override:true,loop:false})
+                .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+      }
+    });
+  }
+  player1_selectedShapes = [];
 }
 
 // shape Changed
