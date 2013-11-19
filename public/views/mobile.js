@@ -1,5 +1,6 @@
 var socket = io.connect();
 var selectedSlide = 0;
+var selectedShape = "CIRLCE";
 
 function addMessage(msg, pseudo) {
    $("#chatEntries").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
@@ -72,7 +73,7 @@ function detectTrigger(x){
     step1b = true;
   }
   if (step2a && (x > 0)) {
-    socket.emit('message', "CIRCLE"); // this works, but it might be finicky.
+    socket.emit('message', selectedShape); // this works, but it might be finicky.
     step1a = false;
     step1b = false;
     step2a = false;
@@ -94,7 +95,7 @@ function deviceOrientationHandler(lr, fb, dir){
     step1b = true;
   }
   if (step2a && (lr > 0)) {
-    socket.emit('message', "CIRCLE");
+    socket.emit('message', selectedShape);
     step1a = false;
     step1b = false;
     step2a = false;
@@ -122,10 +123,12 @@ $(function() {
    //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
    $("#featured").on("orbit:after-slide-change", function(event, orbit) {
     var shapes = ['CIRCLE','SQUARE','TRIANGLE'];
-    var selectedShape = shapes[orbit.slide_number];
-    socket.emit('message', selectedShape);
+    selectedShape = shapes[orbit.slide_number];
+    //TODO when a new shape is selected then the objects should fall
   });
 
+    /*
+    // this works for newer phones with a gyroscope
     if (window.DeviceOrientationEvent){
       window.addEventListener('deviceorientation', function(eventData) {
         // gamma is the left-to-right tilt in degrees, where right is positive
@@ -145,12 +148,12 @@ $(function() {
       window.addEventListener('orientationchange', function(eventData){
         //console.log("orientationchange detected"); // this works (it fires when the browser obviously changes orientation)
       });
-    }
+    }*/
   
   if ((/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent) ) {
+    // This works for older model phones like iPhone 3gs (it only has an accelerometer)
     if (window.DeviceMotionEvent){
       window.addEventListener('devicemotion', deviceMotionHandler, false);
-      console.log("event listener added");
     }
 
   }

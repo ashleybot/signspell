@@ -49,13 +49,21 @@ io.sockets.on('connection', function (socket) {
   
   // message 
   socket.on('message', function (message) {
-   socket.get('pseudo', function (error, name) {
-    socket.get('player_id', function (error, id){
+    socket.get('pseudo', function (error, name) {
+      socket.get('player_id', function (error, id){
         var data = { 'message' : message, pseudo : name, player_id : id };
         socket.broadcast.emit('message', data);
-        });
-     })
-   });
+      });
+    })
+  });
+   
+  // shape changed
+  socket.on('shapeChanged', function (newShapeName) {
+    socket.get('player_id', function (error, id){
+      var data = {'player_id' : id, 'shape_name' : newShapeName};
+      socket.broadcast.emit('shapeChanged', data);
+    });
+  });
 });
 
 

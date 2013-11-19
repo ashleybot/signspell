@@ -1,4 +1,5 @@
 var socket = io.connect();
+var canvas, stage, shapes;
 
 function addPlayer(player, pseudo) {
   if (player == 1)
@@ -11,14 +12,13 @@ function addPlayer(player, pseudo) {
   }
 }
 
-
 // player Joined
 socket.on('playerJoined', function(data) {
   addPlayer(data['player_id'], data['psuedo']);
 });
 
 function addMessage(msg, pseudo, player_id) {
-  if (player_id ==1)
+  if (player_id == 1)
   {
     $("#player1").append('<div class="message"><p>' + pseudo + ' : ' + msg + '</p></div>');
   }
@@ -27,20 +27,35 @@ function addMessage(msg, pseudo, player_id) {
   }
 }
 
-function sendMessage() {
-   if ($('#messageInput').val() != "") 
-   {
-      socket.emit('message', $('#messageInput').val());
-      addMessage($('#messageInput').val(), "Me", new Date().toISOString(), true);
-      $('#messageInput').val('');
-   }
-}
-
-
 // message
 socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo'], data['player_id']);
+   // TODO if the message is a shape, then make some objects levitate
+   var possibleShape = data['message'];
+   if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
+    
+    var child = null;
+    if (possibleShape == 'CIRCLE') {
+      child = stage.getChildAt(1);
+    } else if (possibleShape == 'SQUARE') {
+      child = stage.getChildAt(2);
+    }
+    if (child){
+      var clickTween = createjs.Tween.get(child, {override:true,loop:false})
+             .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
+    }
+   }
 });
+
+function dropObjects(player_id) {
+  //TODO Get player's selected objects and drop them
+}
+
+// shape Changed
+socket.on('shapeChanged', function(data) {
+  dropObjects(data['player_id']);
+});
+
 
 function handleComplete(tween) {
   var ball = tween._target;
@@ -78,12 +93,11 @@ function createTriangle() {
 
 $(function() {
     
-  var canvas = document.getElementById("testCanvas");
-  var stage = new createjs.Stage(canvas);
-  console.log(stage);
+  canvas = document.getElementById("testCanvas");
+  stage = new createjs.Stage(canvas);
   stage.autoClear = true;
 
-  var balls = [];
+  shapes = [];
   $.getJSON( "data/asl.json", function( data ) {
     
     $.each( data, function( key, val) {
@@ -93,11 +107,11 @@ $(function() {
       } else{
         ball = createBall();
       }
-      balls.push(ball);
+      shapes.push(ball);
   
     }); //each
   
-    $.each(balls, function(index, ball){
+    $.each(shapes, function(index, ball){
       ball.x = 200 + (index * 80);
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
@@ -109,14 +123,13 @@ $(function() {
              .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut)
              .wait(1000)
              .to({scaleX:.5, scaleY:.5, x:30, rotation:-360, y:canvas.height-30}, 2500, createjs.Ease.bounceOut);*/
-      console.log(ball);
+      
       stage.addChild(ball);
     });
     createjs.Ticker.addEventListener("tick", stage);
   }); // getJSON
   
   $("#logo").click( function(){
-    console.log("stage " + stage);
     var child = stage.getChildAt(0);
     if (child){
       var clickTween = createjs.Tween.get(child, {override:true,loop:false})
