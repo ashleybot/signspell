@@ -121,9 +121,9 @@ $(function() {
    
    //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
    $("#featured").on("orbit:after-slide-change", function(event, orbit) {
-    selectedSlide = orbit.slide_number;
-    console.info("after slide change");
-    console.info("slide " + orbit.slide_number + " of " + orbit.total_slides);
+    var shapes = ['CIRCLE','SQUARE','TRIANGLE'];
+    var selectedShape = shapes[orbit.slide_number];
+    socket.emit('message', selectedShape);
   });
 
     if (window.DeviceOrientationEvent){

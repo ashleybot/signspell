@@ -62,6 +62,20 @@ function createBall() {
   return ball;
 }
 
+function createBox() {
+  var ball = new createjs.Shape();
+  ball.graphics.setStrokeStyle(5, 'round', 'round');
+  ball.graphics.beginStroke(('#000000'));
+  ball.graphics.beginFill("#FF0000").drawRect(0,0,100,100);
+  ball.graphics.endStroke();
+  ball.graphics.endFill();
+  return ball;
+}
+
+function createTriangle() {
+  
+}
+
 $(function() {
     
   var canvas = document.getElementById("testCanvas");
@@ -73,7 +87,12 @@ $(function() {
   $.getJSON( "data/asl.json", function( data ) {
     
     $.each( data, function( key, val) {
-      var ball = createBall();
+      var ball;
+      if ((key.length % 2) === 0){
+        ball = createBox();
+      } else{
+        ball = createBall();
+      }
       balls.push(ball);
   
     }); //each
@@ -82,13 +101,14 @@ $(function() {
       ball.x = 200 + (index * 80);
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
-             .to({x:ball.x, y:canvas.height - 55, rotation:-360}, 1500, createjs.Ease.bounceOut)
-             .wait(1000)
+            .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+             //.to({x:ball.x, y:canvas.height - 55, rotation:-360}, 1500, createjs.Ease.bounceOut);
+             /*.wait(1000)
              .to({x:canvas.width-55, rotation:360}, 2500, createjs.Ease.bounceOut)
              .wait(1000 + (500 * index)).call(handleComplete)
              .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut)
              .wait(1000)
-             .to({scaleX:.5, scaleY:.5, x:30, rotation:-360, y:canvas.height-30}, 2500, createjs.Ease.bounceOut);
+             .to({scaleX:.5, scaleY:.5, x:30, rotation:-360, y:canvas.height-30}, 2500, createjs.Ease.bounceOut);*/
       console.log(ball);
       stage.addChild(ball);
     });
