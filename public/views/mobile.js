@@ -67,23 +67,26 @@ socket.on('message', function(data) {
 
 // playerJoined, this is sent to both players, so if playerId is already set then the other player is the one joining
 socket.on('playerJoined', function(data){
+  console.log("player joing");
   if (playerId.length == 0){
     playerId = data["player_id"]; // only set if it is not already set
   }
+  console.log(playerId);
   if (playerId == "1"){
     $('#zero').attr("src","images/red.png");
     $('#one').attr("src","images/blue.png");
     $('#two').attr("src","images/green.png");
     selectedShape = "RED";
+    console.log("replaced shaped");
   }
-  $('#featured').show();
+  //$('#featured').show();
+  console.log("wahts the problem here");
 });
 
 $(function() {
-   $("#featured").hide();
+   //$("#featured").hide();
    $("#pseudoSet").click(function() {setPseudo()});
    
-   //TODO Set a parameter to indicate which slide is selected, but wait for the shake event to send message
    $("#featured").on("orbit:after-slide-change", function(event, orbit) {
     var shapes = ['CIRCLE','SQUARE','TRIANGLE'];
     var colors = ['RED','BLUE','GREEN'];
