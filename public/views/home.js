@@ -37,7 +37,7 @@ function increaseScore(player_id){
   if (player_id == 2){
     tagId =  '#player2_score';
   }
-  var statement = $(tagId).innerHTML;
+  var statement = $(tagId).text();
   var currentScore = +statement.substr(statement.length - 1, 1);
   console.log(currentScore);
   $(tagId).html("Score: " + (currentScore + 1));
@@ -220,7 +220,9 @@ function readableColor(hex){
 
 $(function() {
   player1_selectedShapes = [];
+  player1_selectedShapeData = [];
   player2_selectedShapes = [];
+  player2_selectedShapeData = [];
   
   canvas = document.getElementById("testCanvas");
   stage = new createjs.Stage(canvas);
