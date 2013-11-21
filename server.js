@@ -67,12 +67,6 @@ io.sockets.on('connection', function (socket) {
     });
   });
   
-  // shapes selected
-  socket.on('shapeSelected', function (data) {
-    socket.get('player_id', function (error, id){
-      //socket.set('player_shapes', data);
-    });
-  });
 });
 
 

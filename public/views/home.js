@@ -60,12 +60,16 @@ function otherPlayerHasSelectedObjects(player_id){
 function objectMatchesAlreadySelectedObjects(possibleShape, player_id){
   if (player_id == '1'){
     // opposite player's shapes are names
+    console.log("player 1");
     if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
+      console.log("shape matches");
       return true;
     }
   } else {
+    console.log("player 2");
     // opposite player's shapes are colors
     if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
+      console.log("shape matches");
       return true;
     }
   }
@@ -85,9 +89,7 @@ function selectObjectsForPlayer(player_id, possibleShape){
         }
       }
     });
-    if (player2_selectedShapes.length > 0){
-      socket.emit('shapesSelected', player2_selectedShapes);
-    }
+    
    } else if ('REDBLUEGREEN'.indexOf(possibleShape) > -1){
      $.each(colors, function(index){
       var child = null;
@@ -101,9 +103,7 @@ function selectObjectsForPlayer(player_id, possibleShape){
         }
       }
      });
-     if (player1_selectedShapes.length > 0){
-       socket.emit('shapesSelected', player1_selectedShapes);
-     }
+     
   }
 }
 
@@ -127,7 +127,7 @@ socket.on('message', function(data) {
    } else {
      selectObjectsForPlayer(playerId, possibleShape);
    }
-   
+   console.log("end message");
 });
 
 function dropObjects(player_id) {  
