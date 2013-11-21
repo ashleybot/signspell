@@ -42,8 +42,9 @@ io.sockets.on('connection', function (socket) {
     socket.set('pseudo', data); 
     playerNumber = playerNumber + 1; // this will only work for one page load each.... it increments too high
     socket.set('player_id', playerNumber);
+    
     var pseudoData = {psuedo : data, 'player_id' : playerNumber}
-    io.sockets.emit('playerJoined', pseudoData);
+    io.sockets.emit('playerJoined', pseudoData); // this is sent to the other mobile device, so it might be why it is not successful
    });
    
   
@@ -69,7 +70,7 @@ io.sockets.on('connection', function (socket) {
   // shapes selected
   socket.on('shapeSelected', function (data) {
     socket.get('player_id', function (error, id){
-      socket.set('player_shapes', data);
+      //socket.set('player_shapes', data);
     });
   });
 });

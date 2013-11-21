@@ -44,37 +44,35 @@ function increaseScore(player_id){
   
 }
 
-// message
-socket.on('message', function(data) {
-   addMessage(data['message'], data['pseudo'], data['player_id']);
-   
-   var possibleShape = data['message'];
-   /*
-   var playerId = data['player_id'];
-   if (playerId == '1'){
-     if (player2_selectedShapeData.length > 0){
-       // since player 1 has colors, then player2_selectedShapeData should also contain colors
-       if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
-         // win condition!
-         increaseScore(playerId);
-         dropObjects(2);
-         dropObjects(1);
-       }
-     }
-   } else {
-     if (player1_selectedShapeData.length > 0){
-       // since player 2 has shapes, then player1_selectedShapeData should also contain shape names
-       if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
-         // win condition!
-         dropObjects(1);
-         dropObjects(2);
-         increaseScore(playerId);
-      }
-     }
-   }
-   */
-   
-   if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
+function otherPlayerHasSelectedObjects(player_id){
+  if (player_id == '1'){
+    if (player2_selectedShapes.length > 0){
+      return true;
+    }
+  } else {
+    if (player1_selectedShapes.length > 0){
+      return true;
+    }
+  }
+  return false;
+}
+
+function objectMatchesAlreadySelectedObjects(possibleShape, player_id){
+  if (player_id == '1'){
+    // opposite player's shapes are names
+    if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
+      return true;
+    }
+  } else {
+    // opposite player's shapes are colors
+    if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
+      return true;
+    }
+  }
+}
+
+function selectObjectsForPlayer(player_id, possibleShape){
+  if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
     $.each(shapes, function(index){
       var child = null;
       if (shapes[index] == possibleShape){
@@ -106,6 +104,28 @@ socket.on('message', function(data) {
      if (player1_selectedShapes.length > 0){
        socket.emit('shapesSelected', player1_selectedShapes);
      }
+  }
+}
+
+// message
+socket.on('message', function(data) {
+   addMessage(data['message'], data['pseudo'], data['player_id']);
+   
+   var possibleShape = data['message'];
+   var playerId = data['player_id'];
+   
+   if ( otherPlayerHasSelectedObjects(playerId) ){
+     if ( objectMatchesAlreadySelectedObjects(possibleShape, playerId) ){
+        //win!
+       increaseScore(playerId);
+       //clear board
+       dropObjects(1);
+       dropObjects(2);
+     } else {
+      selectObjectsForPlayer(playerId, possibleShape);
+     }
+   } else {
+     selectObjectsForPlayer(playerId, possibleShape);
    }
    
 });
