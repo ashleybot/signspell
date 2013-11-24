@@ -216,7 +216,7 @@ function readableColor(hex){
   }
 }
 
-$(function() {
+function initializeShapes(){
   player1_selectedShapes = [];
   player1_selectedShapeData = [];
   player2_selectedShapes = [];
@@ -265,5 +265,9 @@ $(function() {
 
     createjs.Ticker.addEventListener("tick", stage);
   }); // getJSON
+  
+}
 
+$(function() {
+  setTimeout(initializeShapes, 2500);
 }); //function end
