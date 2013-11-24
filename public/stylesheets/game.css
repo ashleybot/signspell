@@ -1,3 +1,25 @@
+html{
+  background: url(../images/black_pattern_tile.jpg) repeat;
+}
+
+#home{
+  background: url(../images/SignSpellBackground_1920x1080.png) no-repeat;
+  background-size: contain;
+  height: 1024px;
+}
+
+#logo{
+  background: url(../images/SignSpell_Logo.png) no-repeat;
+  width: 400px;
+  height: 80px;
+  margin: auto;
+}
+
+canvas{
+  width: 960px;
+  margin: auto;
+}
+
 .items-to-collect{
   list-style: none;
 }

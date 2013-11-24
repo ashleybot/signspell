@@ -39,10 +39,10 @@ function detectTrigger(x){
     step2a = false;
     step2b = false;
   }
-  if (step1b && (x < -9)) {
+  if (step1b && (x < -5)) {
     step2a = true;
   } else {
-    if (x < -9){
+    if (x < -7){
       step1a = true;
     }
   }

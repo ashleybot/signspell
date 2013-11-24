@@ -39,7 +39,6 @@ function increaseScore(player_id){
   }
   var statement = $(tagId).text();
   var currentScore = +statement.substr(statement.length - 1, 1);
-  console.log(currentScore);
   $(tagId).html("Score: " + (currentScore + 1));
   
 }
@@ -60,14 +59,13 @@ function otherPlayerHasSelectedObjects(player_id){
 function objectMatchesAlreadySelectedObjects(possibleShape, player_id){
   if (player_id == '1'){
     // opposite player's shapes are names
-    console.log("player 1");
     if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
       console.log("shape matches");
       return true;
     }
   } else {
-    console.log("player 2");
     // opposite player's shapes are colors
+    console.log(player1_selectedShapeData);
     if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
       console.log("shape matches");
       return true;
@@ -96,7 +94,7 @@ function selectObjectsForPlayer(player_id, possibleShape){
       if (colors[index] == possibleShape){
         child = stage.getChildAt(index); // because the indexes should match up for now
         player1_selectedShapes.push(child);
-        player1_selectedShapes.push(shapes[index]);
+        player1_selectedShapeData.push(shapes[index]);
         if (child){
           var clickTween = createjs.Tween.get(child, {override:true,loop:false})
                  .to({y:canvas.height-(canvas.height*.9), rotation:360}, 2500, createjs.Ease.bounceOut);
