@@ -15,6 +15,24 @@ html{
   margin: auto;
 }
 
+#player1_handle, #player2_handle {
+  display: none;
+}
+
+#player1_score {
+  position: absolute;
+  left: -100px;
+  top: -60px;
+  color: #ffcc00;
+}
+
+#player2_score {
+  position: absolute;
+  left: 500px;
+  top: -60px;
+  color: #ffcc00;
+}
+
 canvas{
   width: 960px;
   margin: auto;
