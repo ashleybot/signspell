@@ -82,5 +82,56 @@
       "ArmLatitude" : 90,
       "ArmLongitude" : 0
     }
+  },
+  "PIE" : {  },
+  "POLICE" : {  },
+  "SCREWDRIVER" : {  },
+  "MOTORCYCLE" : {  },
+  "PEPPER" : {  },
+  "ELEPHANT" : {  },
+  "TOY" : {  },
+  "LEMON" : {  },
+  "POUR" : {
+    "Start" : {
+      "Handshape" : "Y",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "Y",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    }
+  },
+  "PURSE" : {
+    "Start" : {
+      "Handshape" : "S",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "S",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    }
+  },
+  "TOILET" : {
+    "Start" : {
+      "Handshape" : "T",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    },
+    "End" : {
+      "Handshape" : "T",
+      "PalmOrientation" : "SIDE",
+      "ArmLatitude" : 90,
+      "ArmLongitude" : 0
+    }
   }
+
 }
