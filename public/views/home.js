@@ -56,23 +56,21 @@ function otherPlayerHasSelectedObjects(player_id){
   return false;
 }
 
+// The player can grab another players levitating object if it is a match
 function objectMatchesAlreadySelectedObjects(possibleShape, player_id){
   if (player_id == '1'){
-    // opposite player's shapes are names
     if (player2_selectedShapeData.toString().indexOf(possibleShape) > -1){
-      console.log("shape matches");
       return true;
     }
   } else {
-    // opposite player's shapes are colors
-    console.log(player1_selectedShapeData);
     if (player1_selectedShapeData.toString().indexOf(possibleShape) > -1){
-      console.log("shape matches");
       return true;
     }
   }
 }
 
+// Make objects levitate
+// As players win objects then their slot in the shapes and colors arrays should be empty
 function selectObjectsForPlayer(player_id, possibleShape){
   if ('CIRCLESQUARETRIANGLE'.indexOf(possibleShape) > -1){
     $.each(shapes, function(index){
@@ -105,6 +103,45 @@ function selectObjectsForPlayer(player_id, possibleShape){
   }
 }
 
+// Add object to player's collection and remove it from the board
+// This should be called after a "win"
+// So we know there is already a match
+function grabObjectForPlayer(shapeAttribute, playerId){
+  var indexOfShape = -1;
+  if ('CIRCLESQUARETRIANGLE'.indexOf(shapeAttribute) > -1){
+  // if it is a circlesquaretriangle it is player 2 who won
+  for (i =0; i < shapes.length; i++){
+      if (shapes[i] == shapeAttribute){
+        indexOfShape = i;
+        shapes[i] = ""; //remove it
+        colors[i] = "";
+        break; // stop at the first one
+      }
+  }
+  } else {
+    // otherwise it is a color and it is player 1
+    for (i = 0; i < colors.length; i++){
+      if (colors[i] == shapeAttribute){
+        indexOfShape = i;
+        colors[i] = ""; //remove it
+        shapes[i] = "";
+        break; // stop at the first one
+      }
+    }
+    if (indexOfShape > -1){
+      //player1_selectedShapes = [];
+      //player1_selectedShapeData = [];
+    }
+  }
+  console.log(colors);
+  console.log(shapes);
+  // now look in the stage for the object
+  var stageObject = stage.getChildAt(indexOfShape); // because the indexes should match up for n
+  
+  var clickTween = createjs.Tween.get(stageObject, {override:true,loop:false})
+         .to({x:0, rotation:360}, 500, createjs.Ease.bounceOut);
+}
+
 // message
 socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo'], data['player_id']);
@@ -116,6 +153,8 @@ socket.on('message', function(data) {
      if ( objectMatchesAlreadySelectedObjects(possibleShape, playerId) ){
         //win!
        increaseScore(playerId);
+       // grab object for player's collection, possible object is a color or shape
+       grabObjectForPlayer(possibleShape, playerId);
        //clear board
        dropObjects(1);
        dropObjects(2);
@@ -125,7 +164,6 @@ socket.on('message', function(data) {
    } else {
      selectObjectsForPlayer(playerId, possibleShape);
    }
-   console.log("end message");
 });
 
 function dropObjects(player_id) {  
