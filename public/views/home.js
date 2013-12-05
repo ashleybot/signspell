@@ -108,6 +108,7 @@ function selectObjectsForPlayer(player_id, possibleShape){
 // So we know there is already a match
 function grabObjectForPlayer(shapeAttribute, playerId){
   var indexOfShape = -1;
+  var shapeEndPosition = 55;
   if ('CIRCLESQUARETRIANGLE'.indexOf(shapeAttribute) > -1){
   // if it is a circlesquaretriangle it is player 2 who won
   for (i =0; i < shapes.length; i++){
@@ -125,21 +126,18 @@ function grabObjectForPlayer(shapeAttribute, playerId){
         indexOfShape = i;
         colors[i] = ""; //remove it
         shapes[i] = "";
+        shapeEndPosition = canvas.width;
         break; // stop at the first one
       }
     }
-    if (indexOfShape > -1){
-      //player1_selectedShapes = [];
-      //player1_selectedShapeData = [];
-    }
   }
-  console.log(colors);
-  console.log(shapes);
   // now look in the stage for the object
   var stageObject = stage.getChildAt(indexOfShape); // because the indexes should match up for n
   
   var clickTween = createjs.Tween.get(stageObject, {override:true,loop:false})
-         .to({x:0, rotation:360}, 500, createjs.Ease.bounceOut);
+         .to({x:canvas.width-shapeEndPosition, rotation:360}, 2500, createjs.Ease.bounceOut)
+         .wait(500)
+         .to({scaleX:1.5, scaleY:1.5, y:canvas.height-(canvas.height*.5), rotation:360}, 500, createjs.Ease.bounceOut);
 }
 
 // message
@@ -172,8 +170,8 @@ function dropObjects(player_id) {
       $.each(player1_selectedShapes, function(index, shape) {
         
         if (shape){
-            var tween = createjs.Tween.get(shape, {override:true,loop:false})
-                  .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+            var tween = createjs.Tween.get(shape, {loop:false})
+                  .to({x:shape.x, y:canvas.height - 55}, 500, createjs.Ease.bounceOut);
         }
       });
     }
@@ -183,8 +181,8 @@ function dropObjects(player_id) {
     if (player2_selectedShapes) {
       $.each(player2_selectedShapes, function(index, shape){
         if (shape){
-          var tween = createjs.Tween.get(shape, {override:true,loop:false})
-                  .to({x:shape.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+          var tween = createjs.Tween.get(shape, {loop:false})
+                  .to({x:shape.x, y:canvas.height - 55}, 500, createjs.Ease.bounceOut);
         }
       });
     }
