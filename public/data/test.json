@@ -1,26 +1,41 @@
-{
-  "0" : {
-    "Shape" : "CIRCLE",
-    "Color" : "#FF0000"
+{ "0" : {
+    "0" : {
+      "Shape" : "CIRCLE",
+      "Color" : "#FF0000"
+    },
+    "1" : {
+      "Shape" : "SQUARE",
+      "Color" : "#00FF00"
+    },
+    "2" : {
+      "Shape" : "TRIANGLE",
+      "Color" : "#0000FF"
+    }
   },
   "1" : {
-    "Shape" : "SQUARE",
-    "Color" : "#00FF00"
-  },
-  "2" : {
-    "Shape" : "CIRCLE",
-    "Color" : "#0000FF"
-  },
-  "3" : {
-    "Shape" : "SQUARE",
-    "Color" : "#FF0000"
-  },
-  "4" : {
-    "Shape" : "TRIANGLE",
-    "Color" : "#00FF00"
-  },
-  "5" : {
-    "Shape" : "CIRCLE",
-    "Color" : "#0000FF"
+    "0" : {
+      "Shape" : "CIRCLE",
+      "Color" : "#FF0000"
+    },
+    "1" : {
+      "Shape" : "SQUARE",
+      "Color" : "#00FF00"
+    },
+    "2" : {
+      "Shape" : "CIRCLE",
+      "Color" : "#0000FF"
+    },
+    "3" : {
+      "Shape" : "SQUARE",
+      "Color" : "#FF0000"
+    },
+    "4" : {
+      "Shape" : "TRIANGLE",
+      "Color" : "#00FF00"
+    },
+    "5" : {
+      "Shape" : "CIRCLE",
+      "Color" : "#0000FF"
+    }
   }
 }

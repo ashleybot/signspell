@@ -154,8 +154,22 @@ socket.on('message', function(data) {
        // grab object for player's collection, possible object is a color or shape
        grabObjectForPlayer(possibleShape, playerId);
        //clear board
-       dropObjects(1);
-       dropObjects(2);
+       var noMoreShapes = true;
+       for (i = 0; i < shapes.length; i++){
+         if (shapes[i] != ""){
+           noMoreShapes = false;
+           break;
+         }
+       }
+       if (noMoreShapes){
+         shapes = [];
+         colors = [];
+         
+         loadNextLevel("1");
+       } else {
+         dropObjects(1);
+         dropObjects(2);
+       }
      } else {
       selectObjectsForPlayer(playerId, possibleShape);
      }
@@ -252,6 +266,48 @@ function readableColor(hex){
   }
 }
 
+function loadNextLevel(nextLevelNumber){
+  
+  stage.removeAllChildren();
+  stage.update();
+  
+  
+  $.getJSON( "data/test.json", function( data ) {
+    $.each( data, function( level, levelData) {
+      if (level == nextLevelNumber) {
+        $.each(levelData, function(key, val){
+          var shapeType = val.Shape;
+          var shapeColor = val.Color;
+          
+          shapes.push(shapeType); // for data indexing, player 1 gets shapes
+          colors.push(readableColor(shapeColor)); // for data indexing, player 2 gets colors
+        });
+      }
+    });
+    
+   
+    for (i = 0; i < shapes.length; i++) {
+    
+      var ball;
+      var shapeType = shapes[i];
+      var shapeColor = colors[i];
+      if (shapeType == "SQUARE"){
+        ball = createBox(shapeColor);
+      } else if (shapeType == "CIRCLE"){
+        ball = createBall(shapeColor);
+      } else{
+        ball = createTriangle(shapeColor);
+      }
+      ball.x = 200 + (i * 80);
+      ball.y = -50; // so that it falls from above
+      var tween = createjs.Tween.get(ball, {loop:false})
+            .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
+      stage.addChild(ball);
+    }
+    
+  }); 
+}
+
 function initializeShapes(){
   player1_selectedShapes = [];
   player1_selectedShapeData = [];
@@ -264,43 +320,9 @@ function initializeShapes(){
 
   shapes = [];
   colors = [];
-  $.getJSON( "data/test.json", function( data ) {
-    
-    $.each( data, function( key, val) {
-      var shapeType = val.Shape;
-      var shapeColor = val.Color;
+  loadNextLevel("0");
 
-      var ball;
-      if (shapeType == "SQUARE"){
-        ball = createBox(shapeColor);
-      } else if (shapeType == "CIRCLE"){
-        ball = createBall(shapeColor);
-      } else{
-        ball = createTriangle(shapeColor);
-      }
-      
-      shapes.push(shapeType); // for data indexing, player 1 gets shapes
-      colors.push(readableColor(shapeColor)); // for data indexing, player 2 gets colors
-      
-      ball.x = 200 + (key * 80);
-      ball.y = -50; // so that it falls from above
-      var tween = createjs.Tween.get(ball, {loop:false})
-            .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
-      stage.addChild(ball);
-  
-    }); //each
-  
-    // Here are some tween examples
-             /*.to({x:ball.x, y:canvas.height - 55, rotation:-360}, 1500, createjs.Ease.bounceOut);
-             .wait(1000)
-             .to({x:canvas.width-55, rotation:360}, 2500, createjs.Ease.bounceOut)
-             .wait(1000 + (500 * index)).call(handleComplete)
-             .to({scaleX:2, scaleY:2, x:canvas.width - 110, y:canvas.height-110}, 2500, createjs.Ease.bounceOut)
-             .wait(1000)
-             .to({scaleX:.5, scaleY:.5, x:30, rotation:-360, y:canvas.height-30}, 2500, createjs.Ease.bounceOut);*/
-
-    createjs.Ticker.addEventListener("tick", stage);
-  }); // getJSON
+  createjs.Ticker.addEventListener("tick", stage);
   
 }
 
