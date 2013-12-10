@@ -1,7 +1,8 @@
 var socket = io.connect();
-var canvas, stage, shapes, colors;
+var canvas, stage, shapes, colors, currentLevel;
 var player1_selectedShapes, player1_selectedShapeData;
 var player2_selectedShapes, player2_selectedShapeData;
+var player1_shapeCount, player2_shapeCount;
 
 
 function addPlayer(player, pseudo) {
@@ -37,9 +38,12 @@ function increaseScore(player_id){
   if (player_id == 2){
     tagId =  '#player2_score';
   }
-  var statement = $(tagId).text();
-  var currentScore = +statement.substr(statement.length - 1, 1);
-  $(tagId).html("Score: " + (currentScore + 1));
+  var score = $(tagId).data("score");
+  //var statement = $(tagId).text();
+  //var currentScore = +statement.substr(statement.length - 1, 1);
+  score++;
+  $(tagId).data("score", score);
+  $(tagId).html("Score: " + score);
   
 }
 
@@ -109,6 +113,7 @@ function selectObjectsForPlayer(player_id, possibleShape){
 function grabObjectForPlayer(shapeAttribute, playerId){
   var indexOfShape = -1;
   var shapeEndPosition = 55;
+  var playerShapeCount = 0;
   if ('CIRCLESQUARETRIANGLE'.indexOf(shapeAttribute) > -1){
   // if it is a circlesquaretriangle it is player 2 who won
   for (i =0; i < shapes.length; i++){
@@ -116,6 +121,8 @@ function grabObjectForPlayer(shapeAttribute, playerId){
         indexOfShape = i;
         shapes[i] = ""; //remove it
         colors[i] = "";
+        player2_shapeCount++;
+        playerShapeCount = player2_shapeCount;
         break; // stop at the first one
       }
   }
@@ -126,7 +133,9 @@ function grabObjectForPlayer(shapeAttribute, playerId){
         indexOfShape = i;
         colors[i] = ""; //remove it
         shapes[i] = "";
-        shapeEndPosition = canvas.width;
+        player1_shapeCount++;
+        playerShapeCount = player1_shapeCount;
+        shapeEndPosition = canvas.width - 55; // it gets put at canvas.width - shapeEndPosition
         break; // stop at the first one
       }
     }
@@ -137,7 +146,9 @@ function grabObjectForPlayer(shapeAttribute, playerId){
   var clickTween = createjs.Tween.get(stageObject, {override:true,loop:false})
          .to({x:canvas.width-shapeEndPosition, rotation:360}, 2500, createjs.Ease.bounceOut)
          .wait(500)
-         .to({scaleX:1.5, scaleY:1.5, y:canvas.height-(canvas.height*.5), rotation:360}, 500, createjs.Ease.bounceOut);
+         .to({scaleX:1.5, scaleY:1.5, y:canvas.height-(canvas.height*.5), rotation:360}, 500, createjs.Ease.bounceOut)
+         .wait(100)
+         .to({scaleX:.3, scaleY:.3, y:canvas.height-(playerShapeCount * 20)}, 500, createjs.Ease.bounceOut);
 }
 
 // message
@@ -164,8 +175,14 @@ socket.on('message', function(data) {
        if (noMoreShapes){
          shapes = [];
          colors = [];
-         
-         loadNextLevel("1");
+         player1_shapeCount = 0;
+         player2_shapeCount = 0;
+         currentLevel++;
+         var nextLevelExists = loadNextLevel(currentLevel);
+         if (!nextLevelExists) {
+           // TODO Show scores... game is over
+           // Have a way to restart the game with a shake
+         }
        } else {
          dropObjects(1);
          dropObjects(2);
@@ -267,14 +284,17 @@ function readableColor(hex){
 }
 
 function loadNextLevel(nextLevelNumber){
-  
+  var levelLoaded = false;
+  // TODO take all shapes and rotate around screen before clearing level
   stage.removeAllChildren();
   stage.update();
   
   
-  $.getJSON( "data/test.json", function( data ) {
+  $.getJSON( "data/levels_board.json", function( data ) {
+    // Load the object colors and shapes into the data arrays (they kind of keep the game level state)
     $.each( data, function( level, levelData) {
       if (level == nextLevelNumber) {
+        levelLoaded = true;
         $.each(levelData, function(key, val){
           var shapeType = val.Shape;
           var shapeColor = val.Color;
@@ -284,8 +304,8 @@ function loadNextLevel(nextLevelNumber){
         });
       }
     });
-    
    
+    // From the data arrays, create the actual shapes in the Easel scene
     for (i = 0; i < shapes.length; i++) {
     
       var ball;
@@ -298,7 +318,7 @@ function loadNextLevel(nextLevelNumber){
       } else{
         ball = createTriangle(shapeColor);
       }
-      ball.x = 200 + (i * 80);
+      ball.x = ((560 / shapes.length) * i) + 200;
       ball.y = -50; // so that it falls from above
       var tween = createjs.Tween.get(ball, {loop:false})
             .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
@@ -306,6 +326,7 @@ function loadNextLevel(nextLevelNumber){
     }
     
   }); 
+  return levelLoaded; // doesn't return until all JSON is gotted, otherwise wouldn't work
 }
 
 function initializeShapes(){
@@ -313,6 +334,8 @@ function initializeShapes(){
   player1_selectedShapeData = [];
   player2_selectedShapes = [];
   player2_selectedShapeData = [];
+  player1_shapeCount = 0;
+  player2_shapeCount = 0;
   
   canvas = document.getElementById("testCanvas");
   stage = new createjs.Stage(canvas);
@@ -320,7 +343,8 @@ function initializeShapes(){
 
   shapes = [];
   colors = [];
-  loadNextLevel("0");
+  currentLevel = 0;
+  loadNextLevel(currentLevel);
 
   createjs.Ticker.addEventListener("tick", stage);
   

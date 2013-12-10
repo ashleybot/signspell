@@ -1,0 +1,37 @@
+{ "0" : {
+    "PLAYER1" : {
+      "0": "RED",
+      "1": "GREEN",
+      "2": "BLUE"
+    },
+    "PLAYER2" : {
+      "0": "SQUARE",
+      "1": "CIRCLE",
+      "2": "TRIANGLE"
+    }
+  },
+  "1" : {
+    "PLAYER1" : {
+      "0": "RED",
+      "1": "GREEN",
+      "2": "BLUE"
+    },
+    "PLAYER2" : {
+      "0": "SQUARE",
+      "1": "CIRCLE",
+      "2": "TRIANGLE"
+    }
+  },
+  "2" : {
+    "PLAYER1" : {
+      "0": "RED",
+      "1": "GREEN",
+      "2": "BLUE"
+    },
+    "PLAYER2" : {
+      "0": "SQUARE",
+      "1": "CIRCLE",
+      "2": "TRIANGLE"
+    }
+  }
+}
