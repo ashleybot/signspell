@@ -115,19 +115,22 @@ function grabObjectForPlayer(shapeAttribute, playerId){
   var shapeEndPosition = 55;
   var playerShapeCount = 0;
   if ('CIRCLESQUARETRIANGLE'.indexOf(shapeAttribute) > -1){
-  // if it is a circlesquaretriangle it is player 2 who won
-  for (i =0; i < shapes.length; i++){
-      if (shapes[i] == shapeAttribute){
-        indexOfShape = i;
-        shapes[i] = ""; //remove it
-        colors[i] = "";
-        player2_shapeCount++;
-        playerShapeCount = player2_shapeCount;
-        break; // stop at the first one
-      }
-  }
+    // if it is a circlesquaretriangle it is player 2 who initiated
+    console.log("Grabbing for Player 2");
+    for (i =0; i < shapes.length; i++){
+        if (shapes[i] == shapeAttribute){
+          indexOfShape = i;
+          shapes[i] = ""; //remove it
+          colors[i] = "";
+          player2_shapeCount++;
+          playerShapeCount = player2_shapeCount;
+          break; // stop at the first one
+        }
+    }
+    console.log("Shape found at " + indexOfShape);
   } else {
     // otherwise it is a color and it is player 1
+    console.log("Grabbing for Player 1");
     for (i = 0; i < colors.length; i++){
       if (colors[i] == shapeAttribute){
         indexOfShape = i;
@@ -139,10 +142,11 @@ function grabObjectForPlayer(shapeAttribute, playerId){
         break; // stop at the first one
       }
     }
+    console.log("Color found at " + indexOfShape);
   }
   // now look in the stage for the object
   var stageObject = stage.getChildAt(indexOfShape); // because the indexes should match up for n
-  
+  console.log("Grabbed scene objet at " + indexOfShape);
   var clickTween = createjs.Tween.get(stageObject, {override:true,loop:false})
          .to({x:canvas.width-shapeEndPosition, rotation:360}, 2500, createjs.Ease.bounceOut)
          .wait(500)
@@ -151,13 +155,24 @@ function grabObjectForPlayer(shapeAttribute, playerId){
          .to({scaleX:.3, scaleY:.3, y:canvas.height-(playerShapeCount * 20)}, 500, createjs.Ease.bounceOut);
 }
 
+function resetLevel(){
+  player1_selectedShapes = [];
+  player2_selectedShapes = [];
+  player1_selectedShapeData = [];
+  player2_selectedShapeData = [];
+  shapes = [];
+  colors = [];
+  player1_shapeCount = 0;
+  player2_shapeCount = 0;
+}
+
 // message
 socket.on('message', function(data) {
    addMessage(data['message'], data['pseudo'], data['player_id']);
    
    var possibleShape = data['message'];
    var playerId = data['player_id'];
-   
+   console.log("Player " + playerId + " selected " + possibleShape);
    if ( otherPlayerHasSelectedObjects(playerId) ){
      if ( objectMatchesAlreadySelectedObjects(possibleShape, playerId) ){
         //win!
@@ -173,10 +188,7 @@ socket.on('message', function(data) {
          }
        }
        if (noMoreShapes){
-         shapes = [];
-         colors = [];
-         player1_shapeCount = 0;
-         player2_shapeCount = 0;
+        resetLevel();
          currentLevel++;
          var nextLevelExists = loadNextLevel(currentLevel);
          if (!nextLevelExists) {
