@@ -146,13 +146,15 @@ function grabObjectForPlayer(shapeAttribute, playerId){
   }
   // now look in the stage for the object
   var stageObject = stage.getChildAt(indexOfShape); // because the indexes should match up for n
-  console.log("Grabbed scene objet at " + indexOfShape);
-  var clickTween = createjs.Tween.get(stageObject, {override:true,loop:false})
-         .to({x:canvas.width-shapeEndPosition, rotation:360}, 2500, createjs.Ease.bounceOut)
+  
+  // override means that it can override other tweens, not that it can be overridden
+  var clickTween = createjs.Tween.get(stageObject, {override: true, loop:false})
+         .to({x:canvas.width-shapeEndPosition, rotation:360}, 500, createjs.Ease.bounceOut)
          .wait(500)
          .to({scaleX:1.5, scaleY:1.5, y:canvas.height-(canvas.height*.5), rotation:360}, 500, createjs.Ease.bounceOut)
          .wait(100)
-         .to({scaleX:.3, scaleY:.3, y:canvas.height-(playerShapeCount * 20)}, 500, createjs.Ease.bounceOut);
+         .to({scaleX:.3, scaleY:.3, y:canvas.height-(playerShapeCount * 20)}, 1500, createjs.Ease.bounceOut);
+  return stageObject;
 }
 
 function resetLevel(){
@@ -173,13 +175,14 @@ socket.on('message', function(data) {
    var possibleShape = data['message'];
    var playerId = data['player_id'];
    console.log("Player " + playerId + " selected " + possibleShape);
+   
    if ( otherPlayerHasSelectedObjects(playerId) ){
      if ( objectMatchesAlreadySelectedObjects(possibleShape, playerId) ){
         //win!
        increaseScore(playerId);
        // grab object for player's collection, possible object is a color or shape
-       grabObjectForPlayer(possibleShape, playerId);
-       //clear board
+       var wonObject = grabObjectForPlayer(possibleShape, playerId);
+       // are there more shapes to be selected?
        var noMoreShapes = true;
        for (i = 0; i < shapes.length; i++){
          if (shapes[i] != ""){
@@ -196,6 +199,10 @@ socket.on('message', function(data) {
            // Have a way to restart the game with a shake
          }
        } else {
+        // if we're still in the same level drop the objects
+        // dropObjects uses player#_selectedShapes, so remove the won object so the tweens aren't performed on it
+
+        }
          dropObjects(1);
          dropObjects(2);
        }
@@ -211,31 +218,35 @@ function dropObjects(player_id) {
   if (player_id == 1){
     if (player1_selectedShapes) {
       $.each(player1_selectedShapes, function(index, shape) {
-        
-        if (shape){
-            var tween = createjs.Tween.get(shape, {loop:false})
+        if (shape != null){
+          console.log("1 " + shape);
+          createjs.Tween.get(shape, {override:true,loop:false})
                   .to({x:shape.x, y:canvas.height - 55}, 500, createjs.Ease.bounceOut);
         }
       });
     }
     player1_selectedShapes = [];
     player1_selectedShapeData = [];
+    console.log("player 1 shapes cleared");
   } else {
     if (player2_selectedShapes) {
       $.each(player2_selectedShapes, function(index, shape){
-        if (shape){
-          var tween = createjs.Tween.get(shape, {loop:false})
+        if (shape != null){
+          console.log("2 " + shape);
+          createjs.Tween.get(shape, {override:true,loop:false})
                   .to({x:shape.x, y:canvas.height - 55}, 500, createjs.Ease.bounceOut);
         }
       });
     }
     player2_selectedShapes = [];
     player2_selectedShapeData = [];
+    console.log("player 2 shapes cleared");
   }
 }
 
 // shape Changed
 socket.on('shapeChanged', function(data) {
+  console.log("player swiped");
   dropObjects(data['player_id']);
 });
 
@@ -295,9 +306,23 @@ function readableColor(hex){
   }
 }
 
+
+function rx(){ return Math.random()*940+10; }
+function ry(){ return Math.random()*380+10; }
+function rc(){return Math.round(Math.random()*0xED+0x12).toString(16); }
+
 function loadNextLevel(nextLevelNumber){
   var levelLoaded = false;
-  // TODO take all shapes and rotate around screen before clearing level
+  
+  for (i = 0; i < shapes.length; i++){
+    var ball = stage.getChildAt(i);
+    var path = [rx(),ry(),rx(),ry(),rx(),ry()];
+		createjs.Tween.get(ball, {override:true, loop:true})
+			.to({guide:{path:path, start:0, end:1}}, 5000)
+			.wait(Math.random()*4000)
+			.to({guide:{path:path, start:1, end:0}}, 5000);
+  } 
+   
   stage.removeAllChildren();
   stage.update();
   
@@ -332,7 +357,7 @@ function loadNextLevel(nextLevelNumber){
       }
       ball.x = ((560 / shapes.length) * i) + 200;
       ball.y = -50; // so that it falls from above
-      var tween = createjs.Tween.get(ball, {loop:false})
+      var tween = createjs.Tween.get(ball, {override:true,loop:false})
             .to({x:ball.x, y:canvas.height - 55}, 1500, createjs.Ease.bounceOut);
       stage.addChild(ball);
     }
@@ -342,19 +367,14 @@ function loadNextLevel(nextLevelNumber){
 }
 
 function initializeShapes(){
-  player1_selectedShapes = [];
-  player1_selectedShapeData = [];
-  player2_selectedShapes = [];
-  player2_selectedShapeData = [];
-  player1_shapeCount = 0;
-  player2_shapeCount = 0;
+  
+  createjs.MotionGuidePlugin.install(createjs.Tween);
   
   canvas = document.getElementById("testCanvas");
   stage = new createjs.Stage(canvas);
   stage.autoClear = true;
 
-  shapes = [];
-  colors = [];
+  resetLevel(); // initializes all data arrays and object counters
   currentLevel = 0;
   loadNextLevel(currentLevel);
 
@@ -362,6 +382,7 @@ function initializeShapes(){
   
 }
 
+// initialize
 $(function() {
   setTimeout(initializeShapes, 2500);
 }); //function end
